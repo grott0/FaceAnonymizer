@@ -21,23 +21,7 @@ namespace FaciemAbsconditus
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-
-            #region snippet_AddRazorPages
-            services.AddRazorPages()
-                .AddRazorPagesOptions(options =>
-                {
-                    options.Conventions
-                        .AddPageApplicationModelConvention("/StreamedSingleFileUploadPhysical",
-                            model =>
-                            {
-                                model.Filters.Add(
-                                    new GenerateAntiforgeryTokenCookieAttribute());
-                                model.Filters.Add(
-                                    new DisableFormValueModelBindingAttribute());
-                            });
-                });
-            #endregion
-
+            services.AddRazorPages();
             services.AddSingleton<IFaceAnonymizationService, FaceAnonymizationService>();
             services.AddSingleton<IFileService, PhysicalFileService>();
         }

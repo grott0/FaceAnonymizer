@@ -47,6 +47,8 @@ try:
 	print("[INFO] computing face detections...")
 	net.setInput(blob)
 	detections = net.forward()
+
+	foundFace = bool(False)
 	
 	# loop over the detections
 	for i in range(0, detections.shape[2]):
@@ -59,6 +61,7 @@ try:
 		if confidence > args["confidence"]:
 			# compute the (x, y)-coordinates of the bounding box for the
 			# object
+			foundFace = bool(True)
 			box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
 			(startX, startY, endX, endY) = box.astype("int")
 	
@@ -78,17 +81,21 @@ try:
 	
 			# store the blurred face in the output image
 			image[startY:endY, startX:endX] = face
+
 	
-	# display the original image and the output image with the blurred
-	# face(s) side by side
-	#output = np.hstack([orig, image])
-	output = np.hstack([image])
-	#cv2.imshow("Output", output)
-	new_file_name = args["image"].replace('.jpg', '')  + '-anonymized.jpg'
-	cv2.imwrite(new_file_name, output)
-	cv2.waitKey(0)
+	if foundFace:
+		# display the original image and the output image with the blurred
+		# face(s) side by side
+		#output = np.hstack([orig, image])
+		output = np.hstack([image])
+		#cv2.imshow("Output", output)
+		filename, file_extension = os.path.splitext(args["image"])
+		new_file_name = filename + "-anonymized" + file_extension;
+		cv2.imwrite(new_file_name, output)
+		cv2.waitKey(0)
+
 except Exception as inst:
-	f = open('C:/files/file.txt', 'w')
+	f = open("C:/files/file.txt", "w")
 	f.write(inst.args)
-	f.write('\r\n')
+	f.write("\r\n")
 	f.write(inst)

@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Threading.Tasks;
 using FaciemAbsconditus.Services;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -13,7 +14,7 @@ namespace SampleApp.Pages
     public class BufferedSingleFileUploadPhysicalModel : PageModel
     {
         private readonly long _fileSizeLimit;
-        private readonly string[] _permittedExtensions = { ".txt", ".jpg" };
+        private readonly string[] _permittedExtensions = {".jpg", ".png" };
         private readonly IFileService _fileService;
         private readonly IFaceAnonymizationService _faceAnonymizationService;
 
@@ -57,8 +58,10 @@ namespace SampleApp.Pages
             // For the file name of the uploaded file stored
             // server-side, use Path.GetRandomFileName to generate a safe
             // random file name.
-            var extension = ".jpg"; // Find a way to get the original extension of the file.
-            var trustedFileNameForStorage = Path.GetRandomFileName().Replace(".", "") + extension;
+            var extension = Path.GetExtension(FileUpload.FormFile.FileName); // Find a way to get the original extension of the file.
+            var randomFileName = Path.GetRandomFileName();
+            var trustedFileNameForStorage = randomFileName.Replace(".", "") + extension;
+            var anonymizedFileName = string.Empty;
 
             // **WARNING!**
             // In the following example, the file is saved without
@@ -73,7 +76,17 @@ namespace SampleApp.Pages
 
             try
             {
-                _faceAnonymizationService.AnonymizeFace(trustedFileNameForStorage, AnonymizationMethods.simple);
+                anonymizedFileName = _faceAnonymizationService.AnonymizeFace(trustedFileNameForStorage, AnonymizationMethods.simple);
+
+                // If the anonymization process completed without anonymizing the image (e.g. no face detected),
+                // the page should display an appropriate message.
+                if (string.IsNullOrEmpty(anonymizedFileName))
+                {
+                    Result = "Failed to detect a face in the uploaded image. Please try again with a different image.";
+
+                    return Page();
+                }
+
             }
             catch (System.Exception ex)
             {
@@ -81,7 +94,8 @@ namespace SampleApp.Pages
                 throw;
             }
 
-            return Page();
+
+            return Redirect($"/Display?fileName={anonymizedFileName}");
         }
     }
 

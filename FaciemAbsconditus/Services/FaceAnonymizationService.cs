@@ -20,17 +20,15 @@ namespace FaciemAbsconditus.Services
             _webHostEnvironment = webHostEnvironment;
         }
 
-        /// <summary>
-        /// Detects and anonymizes faces in an image.
-        /// </summary>
-        /// <param name="imageName">Path to an image.</param>
-        /// <param name="anonymizationMethod">Face anonymization method.</param>
-        /// <param name="blocks">Number of blocks for the pixelated anonymization method.</param>
-        /// <param name="confidence">Threshold for filtering out weak detections.</param>
-        public void AnonymizeFace(string imageName, AnonymizationMethods anonymizationMethod, int blocks = 20, double confidence = 0.5)
+        public string AnonymizeFace(string imageName, AnonymizationMethods anonymizationMethod, int blocks = 20, double confidence = 0.5)
         {
             var anonymizationMethodArgument = Enum.GetName(typeof(AnonymizationMethods), anonymizationMethod);
             var pathToImage = Path.Combine(_webHostEnvironment.WebRootPath, "SavedFiles", imageName);
+
+            if (!File.Exists(pathToImage))
+            {
+                throw new FileNotFoundException();
+            }
 
             ProcessStartInfo processStartInfo = new ProcessStartInfo()
             {
@@ -53,6 +51,18 @@ namespace FaciemAbsconditus.Services
                     throw new System.Exception(standardError);
                 }
             }
+
+            var imageExtension = Path.GetExtension(pathToImage);
+            var imageNameWithoutExtension = Path.GetFileNameWithoutExtension(pathToImage);
+            var anonymizedImageName = imageNameWithoutExtension + "-anonymized" + imageExtension;
+            var pathToAnonymizedImage = Path.Combine(_webHostEnvironment.WebRootPath, "SavedFiles", anonymizedImageName);
+
+            if (!File.Exists(pathToAnonymizedImage))
+            {
+                return string.Empty;
+            }
+
+            return anonymizedImageName;
         }
     }
 }
