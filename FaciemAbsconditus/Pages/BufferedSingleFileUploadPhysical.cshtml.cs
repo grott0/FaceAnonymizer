@@ -69,7 +69,7 @@ namespace SampleApp.Pages
             // For more information, see the topic that accompanies 
             // this sample.
 
-            await _fileService.Create(trustedFileNameForStorage, formFileContent);
+            await _fileService.CreateAsync(trustedFileNameForStorage, formFileContent);
 
             try
             {

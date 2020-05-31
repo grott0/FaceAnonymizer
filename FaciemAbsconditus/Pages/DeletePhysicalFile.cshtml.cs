@@ -44,7 +44,7 @@ namespace SampleApp.Pages
 
             if (RemoveFile.Exists)
             {
-                _fileService.Delete(fileName);
+                _fileService.DeleteAsync(fileName);
             }
 
             return RedirectToPage("./Index");
