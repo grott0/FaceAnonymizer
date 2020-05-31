@@ -1,14 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
+using FaciemAbsconditus.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using SampleApp.Filters;
 
@@ -44,15 +38,8 @@ namespace FaciemAbsconditus
                 });
             #endregion
 
-            // To list physical files from a path provided by configuration:
-            var currentDirectory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-            var physicalFilesDirectoy = Path.Combine(currentDirectory, Configuration.GetValue<string>("StoredFilesPath"));
-            var physicalProvider = new PhysicalFileProvider(physicalFilesDirectoy);
-
-            // To list physical files in the temporary files folder, use:
-            //var physicalProvider = new PhysicalFileProvider(Path.GetTempPath());
-
-            services.AddSingleton<IFileProvider>(physicalProvider);
+            services.AddSingleton<IFaceAnonymizationService, FaceAnonymizationService>();
+            services.AddSingleton<IFileService, PhysicalFileService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

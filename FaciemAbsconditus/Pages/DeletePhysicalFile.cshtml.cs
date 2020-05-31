@@ -1,3 +1,4 @@
+using FaciemAbsconditus.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.FileProviders;
@@ -6,11 +7,11 @@ namespace SampleApp.Pages
 {
     public class DeletePhysicalFileModel : PageModel
     {
-        private readonly IFileProvider _fileProvider;
+        private readonly IFileService _fileService;
 
-        public DeletePhysicalFileModel(IFileProvider fileProvider)
+        public DeletePhysicalFileModel(IFileService fileService)
         {
-            _fileProvider = fileProvider;
+            _fileService = fileService;
         }
 
         public IFileInfo RemoveFile { get; private set; }
@@ -22,7 +23,7 @@ namespace SampleApp.Pages
                 return RedirectToPage("/Index");
             }
 
-            RemoveFile = _fileProvider.GetFileInfo(fileName);
+            RemoveFile = _fileService.GetFileInfo(fileName);
 
             if (!RemoveFile.Exists)
             {
@@ -39,11 +40,11 @@ namespace SampleApp.Pages
                 return RedirectToPage("/Index");
             }
 
-            RemoveFile = _fileProvider.GetFileInfo(fileName);
+            RemoveFile = _fileService.GetFileInfo(fileName);
 
             if (RemoveFile.Exists)
             {
-                System.IO.File.Delete(RemoveFile.PhysicalPath);
+                _fileService.Delete(fileName);
             }
 
             return RedirectToPage("./Index");

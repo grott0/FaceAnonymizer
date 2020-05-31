@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FaciemAbsconditus.Services;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.FileProviders;
 using System.Net.Mime;
@@ -8,23 +9,23 @@ namespace SampleApp.Pages
 {
     public class IndexModel : PageModel
     {
-        private readonly IFileProvider _fileProvider;
+        private readonly IFileService _fileService;
 
-        public IndexModel(IFileProvider fileProvider)
+        public IndexModel(IFileService fileService)
         {
-            _fileProvider = fileProvider;
+            _fileService = fileService;
         }
 
         public IDirectoryContents PhysicalFiles { get; private set; }
 
         public async Task OnGetAsync()
         {
-            PhysicalFiles = _fileProvider.GetDirectoryContents(string.Empty);
+            PhysicalFiles = _fileService.GetDirectoryContents(string.Empty);
         }
 
         public IActionResult OnGetDownloadPhysical(string fileName)
         {
-            var downloadFile = _fileProvider.GetFileInfo(fileName);
+            var downloadFile = _fileService.GetFileInfo(fileName);
 
             return PhysicalFile(downloadFile.PhysicalPath, MediaTypeNames.Application.Octet, fileName);
         }

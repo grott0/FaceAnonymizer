@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
+using FaciemAbsconditus.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -14,23 +14,20 @@ namespace SampleApp.Pages
     {
         private readonly long _fileSizeLimit;
         private readonly string[] _permittedExtensions = { ".txt", ".jpg" };
-        private readonly string _targetFilePath;
-
-        public BufferedSingleFileUploadPhysicalModel(IConfiguration config)
-        {
-            _fileSizeLimit = config.GetValue<long>("FileSizeLimit");
-
-            // To save physical files to a path provided by configuration:
-            _targetFilePath = config.GetValue<string>("StoredFilesPath");
-
-            // To save physical files to the temporary files folder, use:
-            //_targetFilePath = Path.GetTempPath();
-        }
+        private readonly IFileService _fileService;
+        private readonly IFaceAnonymizationService _faceAnonymizationService;
 
         [BindProperty]
         public BufferedSingleFileUploadPhysical FileUpload { get; set; }
 
         public string Result { get; private set; }
+
+        public BufferedSingleFileUploadPhysicalModel(IConfiguration config, IFaceAnonymizationService faceAnonymizationService, IFileService fileService)
+        {
+            _fileSizeLimit = config.GetValue<long>("FileSizeLimit");
+            _faceAnonymizationService = faceAnonymizationService;
+            _fileService = fileService;
+        }
 
         public void OnGet()
         {
@@ -61,9 +58,7 @@ namespace SampleApp.Pages
             // server-side, use Path.GetRandomFileName to generate a safe
             // random file name.
             var extension = ".jpg"; // Find a way to get the original extension of the file.
-            var trustedFileNameForFileStorage = Path.GetRandomFileName().Replace(".", "") + extension;
-            var filePath = Path.Combine(
-                _targetFilePath, trustedFileNameForFileStorage);
+            var trustedFileNameForStorage = Path.GetRandomFileName().Replace(".", "") + extension;
 
             // **WARNING!**
             // In the following example, the file is saved without
@@ -74,50 +69,19 @@ namespace SampleApp.Pages
             // For more information, see the topic that accompanies 
             // this sample.
 
-            using (var fileStream = System.IO.File.Create(filePath))
-            {
-                await fileStream.WriteAsync(formFileContent);
-
-                // To work directly with a FormFile, use the following
-                // instead:
-                //await FileUpload.FormFile.CopyToAsync(fileStream);
-            }
+            await _fileService.Create(trustedFileNameForStorage, formFileContent);
 
             try
             {
-                AnonymizeImage(filePath);
+                _faceAnonymizationService.AnonymizeFace(trustedFileNameForStorage, AnonymizationMethods.simple);
             }
             catch (System.Exception ex)
             {
+                // Log!
                 throw;
             }
 
-
             return Page();
-        }
-
-        private static void AnonymizeImage(string sourceFilePath)
-        {
-            ProcessStartInfo processStartInfo = new ProcessStartInfo()
-            {
-                FileName = @"C:\Users\Georgi Simeonov\AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python.3.8_qbz5n2kfra8p0\python.exe",
-                UseShellExecute = false,
-                Arguments = $".\\Python\\blur_face.py --image {sourceFilePath} --face .\\Python\\face_detector",
-                RedirectStandardError = true
-            };
-
-            using (var process = Process.Start(processStartInfo))
-            {
-                process.WaitForExit();
-
-                StreamReader errorStream = process.StandardError;
-                var standardError = errorStream.ReadToEnd();
-
-                if (process.ExitCode != 0)
-                {
-                    throw new System.Exception(standardError);
-                }
-            }
         }
     }
 
