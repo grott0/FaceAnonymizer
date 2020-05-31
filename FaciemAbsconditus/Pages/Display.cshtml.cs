@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
 
@@ -6,17 +7,17 @@ namespace SampleApp
 {
     public class DisplayModel : PageModel
     {
-        private readonly string _storedFilesPath;
+        private readonly IWebHostEnvironment _webHostEnvironment;
         public string FileName { get; private set; }
 
-        public DisplayModel(IConfiguration config)
+        public DisplayModel(IWebHostEnvironment webHostEnvironment)
         {
-            _storedFilesPath = config.GetValue<string>("StoredFilesPath");
+            _webHostEnvironment = webHostEnvironment;
         }
 
         public IActionResult OnGet(string fileName)
         {
-            var filePath = System.IO.Path.Combine(_storedFilesPath, fileName);
+            var filePath = System.IO.Path.Combine(_webHostEnvironment.WebRootPath, "SavedFiles", fileName);
 
             if (!System.IO.File.Exists(filePath))
             {
