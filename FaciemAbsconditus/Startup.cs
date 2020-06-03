@@ -20,7 +20,6 @@ namespace FaciemAbsconditus
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
             services.AddRazorPages();
             services.AddSingleton<IFaceAnonymizationService, FaceAnonymizationService>();
             services.AddSingleton<IFileService, PhysicalFileService>();
@@ -42,7 +41,6 @@ namespace FaciemAbsconditus
 
             app.UseEndpoints(endpoints =>
             {
-                //endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
         }
