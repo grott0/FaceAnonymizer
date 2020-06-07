@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.FileProviders;
-using Microsoft.Extensions.Primitives;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -13,7 +12,14 @@ namespace FaciemAbsconditus.Services
 
         public PhysicalFileService(IWebHostEnvironment webHostEnvironment)
         {
-            _storagePath = Path.Combine(webHostEnvironment.WebRootPath, "SavedFiles");
+            var storagePath = Path.Combine(webHostEnvironment.WebRootPath, "SavedFiles");
+
+            if (!Directory.Exists(storagePath))
+            {
+                throw new DirectoryNotFoundException(storagePath);
+            }
+
+            _storagePath = storagePath;
             _fileProvider = new PhysicalFileProvider(_storagePath);
         }
 
@@ -47,11 +53,6 @@ namespace FaciemAbsconditus.Services
         public IFileInfo GetFileInfo(string subpath)
         {
             return _fileProvider.GetFileInfo(subpath);
-        }
-
-        public IChangeToken Watch(string filter)
-        {
-            return _fileProvider.Watch(filter);
         }
     }
 }
