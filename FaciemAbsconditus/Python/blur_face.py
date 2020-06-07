@@ -48,20 +48,20 @@ try:
 	net.setInput(blob)
 	detections = net.forward()
 
-	foundFace = bool(False)
+	found_face = bool(False)
 	
 	# loop over the detections
 	for i in range(0, detections.shape[2]):
 		# extract the confidence (i.e., probability) associated with the
 		# detection
 		confidence = detections[0, 0, i, 2]
-	
+		foo = detections[0, 0, i, 3:7]
 		# filter out weak detections by ensuring the confidence is greater
 		# than the minimum confidence
 		if confidence > args["confidence"]:
 			# compute the (x, y)-coordinates of the bounding box for the
 			# object
-			foundFace = bool(True)
+			found_face = bool(True)
 			box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
 			(startX, startY, endX, endY) = box.astype("int")
 	
@@ -83,7 +83,7 @@ try:
 			image[startY:endY, startX:endX] = face
 
 	
-	if foundFace:
+	if found_face:
 		# display the original image and the output image with the blurred
 		# face(s) side by side
 		#output = np.hstack([orig, image])

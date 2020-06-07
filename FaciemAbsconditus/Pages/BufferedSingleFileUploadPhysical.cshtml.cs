@@ -75,7 +75,7 @@ namespace SampleApp.Pages
 
             try
             {
-                anonymizedFileName = _faceAnonymizationService.AnonymizeFace(trustedFileNameForStorage, AnonymizationMethods.simple);
+                anonymizedFileName = _faceAnonymizationService.AnonymizeFaces(trustedFileNameForStorage, AnonymizationMethods.simple);
 
                 // If the anonymization process completed without anonymizing the image (e.g. no face detected),
                 // the page should display an appropriate message.

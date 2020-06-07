@@ -20,7 +20,7 @@ namespace FaciemAbsconditus.Services
             _webHostEnvironment = webHostEnvironment;
         }
 
-        public string AnonymizeFace(string imageName, AnonymizationMethods anonymizationMethod, int blocks = 20, double confidence = 0.5)
+        public string AnonymizeFaces(string imageName, AnonymizationMethods anonymizationMethod, int blocks = 20, double confidence = 0.5)
         {
             var anonymizationMethodArgument = Enum.GetName(typeof(AnonymizationMethods), anonymizationMethod);
             var pathToImage = Path.Combine(_webHostEnvironment.WebRootPath, "SavedFiles", imageName);
@@ -43,12 +43,14 @@ namespace FaciemAbsconditus.Services
             {
                 process.WaitForExit();
 
-                StreamReader errorStream = process.StandardError;
-                var standardError = errorStream.ReadToEnd();
-
-                if (process.ExitCode != 0)
+                using (StreamReader errorStream = process.StandardError)
                 {
-                    throw new System.Exception(standardError);
+                    var standardError = errorStream.ReadToEnd();
+
+                    if (process.ExitCode != 0)
+                    {
+                        throw new System.Exception(standardError);
+                    }
                 }
             }
 
