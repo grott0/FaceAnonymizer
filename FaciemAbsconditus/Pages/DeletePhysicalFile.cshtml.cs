@@ -44,7 +44,16 @@ namespace SampleApp.Pages
 
             if (RemoveFile.Exists)
             {
-                _fileService.DeleteAsync(fileName);
+                try
+                {
+                    _fileService.DeleteAsync(fileName);
+                }
+                catch (System.Exception ex)
+                {
+                    // log
+                    // Return a message that indicates the file can't be deleted.
+                    throw;
+                }
             }
 
             return RedirectToPage("./Index");
