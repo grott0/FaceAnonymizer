@@ -1,19 +1,19 @@
-using System.ComponentModel.DataAnnotations;
-using System.IO;
-using System.Threading.Tasks;
 using FaciemAbsconditus.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
-using SampleApp.Utilities;
+using FaciemAbsconditus.Utilities;
+using System.ComponentModel.DataAnnotations;
+using System.IO;
+using System.Threading.Tasks;
 
-namespace SampleApp.Pages
+namespace FaciemAbsconditus.Pages
 {
     public class BufferedSingleFileUploadPhysicalModel : PageModel
     {
         private readonly long _fileSizeLimit;
-        private readonly string[] _permittedExtensions = {".jpg", ".png" };
+        private readonly string[] _permittedExtensions;
         private readonly IFileService _fileService;
         private readonly IFaceAnonymizationService _faceAnonymizationService;
 
@@ -25,12 +25,9 @@ namespace SampleApp.Pages
         public BufferedSingleFileUploadPhysicalModel(IConfiguration config, IFaceAnonymizationService faceAnonymizationService, IFileService fileService)
         {
             _fileSizeLimit = config.GetValue<long>("FileSizeLimit");
+            _permittedExtensions = config.GetSection("PermittedExtensions").Get<string[]>();
             _faceAnonymizationService = faceAnonymizationService;
             _fileService = fileService;
-        }
-
-        public void OnGet()
-        {
         }
 
         public async Task<IActionResult> OnPostUploadAsync()
@@ -54,25 +51,12 @@ namespace SampleApp.Pages
                 return Page();
             }
 
-            // For the file name of the uploaded file stored
-            // server-side, use Path.GetRandomFileName to generate a safe
-            // random file name.
-            var extension = Path.GetExtension(FileUpload.FormFile.FileName); // Find a way to get the original extension of the file.
+            var extension = Path.GetExtension(FileUpload.FormFile.FileName);
             var randomFileName = Path.GetRandomFileName();
             var trustedFileNameForStorage = randomFileName.Replace(".", "") + extension;
             var anonymizedFileName = string.Empty;
 
-            // **WARNING!**
-            // In the following example, the file is saved without
-            // scanning the file's contents. In most production
-            // scenarios, an anti-virus/anti-malware scanner API
-            // is used on the file before making the file available
-            // for download or for use by other systems. 
-            // For more information, see the topic that accompanies 
-            // this sample.
-
             await _fileService.CreateAsync(trustedFileNameForStorage, formFileContent);
-
             try
             {
                 anonymizedFileName = _faceAnonymizationService.AnonymizeFaces(trustedFileNameForStorage, AnonymizationMethods.simple);
@@ -85,16 +69,14 @@ namespace SampleApp.Pages
 
                     return Page();
                 }
-
             }
-            catch (System.Exception ex)
+            catch (System.Exception)
             {
                 // Log!
                 throw;
             }
 
-
-            return Redirect($"/Display?fileName={anonymizedFileName}");
+            return Redirect($"/Display/{anonymizedFileName}");
         }
     }
 

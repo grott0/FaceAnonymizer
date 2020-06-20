@@ -5,7 +5,7 @@ using Microsoft.Extensions.FileProviders;
 using System.Net.Mime;
 using System.Threading.Tasks;
 
-namespace SampleApp.Pages
+namespace FaciemAbsconditus.Pages
 {
     public class IndexModel : PageModel
     {

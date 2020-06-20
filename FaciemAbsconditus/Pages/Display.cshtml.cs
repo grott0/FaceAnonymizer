@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace SampleApp
+namespace FaciemAbsconditus.Pages
 {
     public class DisplayModel : PageModel
     {

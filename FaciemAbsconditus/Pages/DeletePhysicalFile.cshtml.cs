@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.FileProviders;
 
-namespace SampleApp.Pages
+namespace FaciemAbsconditus.Pages
 {
     public class DeletePhysicalFileModel : PageModel
     {
@@ -48,10 +48,8 @@ namespace SampleApp.Pages
                 {
                     _fileService.DeleteAsync(fileName);
                 }
-                catch (System.Exception ex)
+                catch (System.Exception)
                 {
-                    // log
-                    // Return a message that indicates the file can't be deleted.
                     throw;
                 }
             }

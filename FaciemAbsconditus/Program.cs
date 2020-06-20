@@ -1,11 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using System;
 
 namespace FaciemAbsconditus
 {
@@ -13,6 +8,7 @@ namespace FaciemAbsconditus
     {
         public static void Main(string[] args)
         {
+            Func<Action<string>, string> func = (next) => { next("pesho"); return "gosho"; };
             CreateHostBuilder(args).Build().Run();
         }
 
