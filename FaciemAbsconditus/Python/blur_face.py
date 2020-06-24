@@ -54,7 +54,6 @@ for i in range(0, detections.shape[2]):
 	# extract the confidence (i.e., probability) associated with the
 	# detection
 	confidence = detections[0, 0, i, 2]
-	foo = detections[0, 0, i, 3:7]
 	# filter out weak detections by ensuring the confidence is greater
 	# than the minimum confidence
 	if confidence > args["confidence"]:

@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29609.76
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FaciemAbsconditus", "FaciemAbsconditus.csproj", "{4164EEB7-F541-4FC5-A845-E8E6806C0C2D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FaciemAbsconditus", "FaciemAbsconditus.csproj", "{4164EEB7-F541-4FC5-A845-E8E6806C0C2D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FasciemAbsconditus.Test", "..\FasciemAbsconditus.Test\FasciemAbsconditus.Test.csproj", "{F082DFC2-015D-42E2-9FE5-D65BDA68F7B4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{4164EEB7-F541-4FC5-A845-E8E6806C0C2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4164EEB7-F541-4FC5-A845-E8E6806C0C2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4164EEB7-F541-4FC5-A845-E8E6806C0C2D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F082DFC2-015D-42E2-9FE5-D65BDA68F7B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F082DFC2-015D-42E2-9FE5-D65BDA68F7B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F082DFC2-015D-42E2-9FE5-D65BDA68F7B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F082DFC2-015D-42E2-9FE5-D65BDA68F7B4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

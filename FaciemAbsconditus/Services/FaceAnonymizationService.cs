@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.FileProviders;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -35,7 +36,7 @@ namespace FaciemAbsconditus.Services
                 // Move to config file.
                 FileName = @"C:\Users\Georgi Simeonov\AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python.3.8_qbz5n2kfra8p0\python.exe",
                 UseShellExecute = false,
-                Arguments = $".\\Python\\blur_face.py --image {pathToImage} --face .\\Python\\face_detector --method {anonymizationMethodArgument} --blocks {blocks} --confidence {confidence}",
+                Arguments = $".\\Python\\blur_face.py --image \"{pathToImage}\" --face .\\Python\\face_detector --method {anonymizationMethodArgument} --blocks {blocks} --confidence {confidence}",
                 RedirectStandardError = true
             };
 
