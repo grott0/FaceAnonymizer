@@ -1,2 +1,2 @@
 # FaceAnonymizer
-A web based application for face detection and anonymization
+A web based application for face detection and anonymization.
